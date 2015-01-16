@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY federation "http://www.ct.infn.it/ontology/federation#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.ct.infn.it/ontology/federation#"
+     xml:base="http://www.ct.infn.it/ontology/federation"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:federation="http://www.ct.infn.it/ontology/federation#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://www.ct.infn.it/ontology/federation"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#hasBody -->
+
+    <owl:ObjectProperty rdf:about="&federation;hasBody">
+        <rdfs:range>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&federation;hasBody"/>
+                <owl:someValuesFrom rdf:resource="&federation;FederationObject"/>
+            </owl:Restriction>
+        </rdfs:range>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#hasParameter -->
+
+    <owl:ObjectProperty rdf:about="&federation;hasParameter">
+        <rdfs:range rdf:resource="&federation;Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#hasSubject -->
+
+    <owl:ObjectProperty rdf:about="&federation;hasSubject">
+        <rdfs:range rdf:resource="&federation;Entity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#hasTarget -->
+
+    <owl:ObjectProperty rdf:about="&federation;hasTarget">
+        <rdfs:range rdf:resource="&federation;FederationEntity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#name -->
+
+    <owl:DatatypeProperty rdf:about="&federation;name"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#Entity -->
+
+    <owl:Class rdf:about="&federation;Entity">
+        <rdfs:subClassOf rdf:resource="&federation;FederationObject"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#FederationEntity -->
+
+    <owl:Class rdf:about="&federation;FederationEntity">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&federation;name"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onDataRange rdf:resource="&xsd;string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#FederationObject -->
+
+    <owl:Class rdf:about="&federation;FederationObject"/>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#Invocation -->
+
+    <owl:Class rdf:about="&federation;Invocation">
+        <rdfs:subClassOf rdf:resource="&federation;FederationObject"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&federation;hasParameter"/>
+                <owl:someValuesFrom rdf:resource="&federation;Entity"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&federation;hasSubject"/>
+                <owl:onClass rdf:resource="&federation;Entity"/>
+                <owl:minQualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minQualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#Message -->
+
+    <owl:Class rdf:about="&federation;Message">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&federation;hasBody"/>
+                <owl:onClass rdf:resource="&federation;FederationObject"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&federation;hasTarget"/>
+                <owl:onClass rdf:resource="&federation;FederationEntity"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#TestEntityClass -->
+
+    <owl:Class rdf:about="&federation;TestEntityClass">
+        <rdfs:subClassOf rdf:resource="&federation;Entity"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&federation;name"/>
+                <owl:someValuesFrom rdf:resource="&xsd;string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#action -->
+
+    <owl:Class rdf:about="&federation;action">
+        <rdfs:subClassOf rdf:resource="&federation;Invocation"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#query -->
+
+    <owl:Class rdf:about="&federation;query">
+        <rdfs:subClassOf rdf:resource="&federation;Invocation"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#Federation -->
+
+    <owl:NamedIndividual rdf:about="&federation;Federation">
+        <rdf:type rdf:resource="&federation;FederationEntity"/>
+        <name>federation</name>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#testMessage -->
+
+    <owl:NamedIndividual rdf:about="&federation;testMessage">
+        <rdf:type rdf:resource="&federation;Message"/>
+        <hasTarget rdf:resource="&federation;Federation"/>
+        <hasBody rdf:resource="&federation;testentity"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.ct.infn.it/ontology/federation#testentity -->
+
+    <owl:NamedIndividual rdf:about="&federation;testentity">
+        <rdf:type rdf:resource="&federation;Entity"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net -->
+
