@@ -20,6 +20,11 @@ import posix_ipc
 import json
 
 
+def _simpleMessageDeserializer(msgstring):
+        msgarr = msgstring.split("|")
+        return DummyFedMessage(msgarr[0], json.loads(msgarr[1]),msgarr[2],msgarr[3])
+
+
 class DummyFedMessage(iFedMessage):
     def __init__(self,target,body,bodyUriType,source=None):
         self._target = target
@@ -36,6 +41,13 @@ class DummyFedMessage(iFedMessage):
         return self._body
     def getBodyUriType(self):
         return self._bodyUriType
+    def toString(self):
+        return self.getTarget() + "|" + json.dumps(self.getBody()) +"|" + self.getBodyUriType() + "|" + self.getSource()
+    @classmethod
+    def createMessageFromString(cls,msg):
+        msgarr = msg.split("|")
+        return DummyFedMessage(msgarr[0], json.loads(msgarr[1]),msgarr[2],msgarr[3])
+
 
 class DummyPosixIPCConsumer(iConsumer,threading.Thread):
     def __init__(self,messageScheduler,configuration):
@@ -56,13 +68,11 @@ class DummyPosixIPCConsumer(iConsumer,threading.Thread):
         while self._running:
             msg, _ = self._mq.receive()
             msg = msg.decode()
-            message = self._stringToMessage(msg)
+            message = DummyFedMessage.createMessageFromString(msg)
             #print(__name__ + " Arrivato messaggio con corpo : " + message.getBody())
             self._ms.serveMessage(message)
 
-    def _stringToMessage(self,msg):
-        msgarr = msg.split("|")
-        return DummyFedMessage(msgarr[0], json.loads(msgarr[1]),msgarr[2],msgarr[3])
+
     def end(self):
         self._running = False
 
@@ -72,7 +82,5 @@ class DummyPosixIPCProducer(iProducer):
     def sendMessage(self,fedMessage):
         target = "/"+fedMessage.getTarget()
         mq = posix_ipc.MessageQueue(target)
-        mq.send(self._messageToString(fedMessage))
+        mq.send(fedMessage.toString())
         mq.close()
-    def _messageToString(self,msg):
-        return msg.getTarget() + "|" + json.dumps(msg.getBody()) +"|" + msg.getBodyUriType() + "|" + msg.getSource()

@@ -41,6 +41,12 @@ class iFedMessage(metaclass=ABCMeta):
     @abstractmethod
     def getBodyUriType(self):
         pass
+    @abstractmethod
+    def toString(self):
+        pass
+    @classmethod
+    def createMessageFromString(cls,msg):
+        raise NotImplementedError()
 
 class iProducer(metaclass=ABCMeta):
     def __init__(self,configuration):
