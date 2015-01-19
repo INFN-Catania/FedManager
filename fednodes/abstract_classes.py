@@ -57,5 +57,5 @@ class iProducer(metaclass=ABCMeta):
     def configure(self):
         pass
     @abstractmethod
-    def sendMessage(self,fedMessage):
+    def sendMessage(self,fedMessageAsString,topic_target):
         pass

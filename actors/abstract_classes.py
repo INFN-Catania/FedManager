@@ -22,7 +22,8 @@ class iActor(metaclass=ABCMeta):
         self._ms = messageScheduler
         self._configuration = configuration
         self._name = name
-    """Method invoked by messaging system to delivery message to Actor"""
+    """Method invoked by messaging system to delivery message to Actor
+    message is a python object"""
     @abstractmethod
     def submitMessage(self, message):
         pass

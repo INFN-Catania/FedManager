@@ -20,10 +20,6 @@ import posix_ipc
 import json
 
 
-def _simpleMessageDeserializer(msgstring):
-        msgarr = msgstring.split("|")
-        return DummyFedMessage(msgarr[0], json.loads(msgarr[1]),msgarr[2],msgarr[3])
-
 
 class DummyFedMessage(iFedMessage):
     def __init__(self,target,body,bodyUriType,source=None):
@@ -68,9 +64,9 @@ class DummyPosixIPCConsumer(iConsumer,threading.Thread):
         while self._running:
             msg, _ = self._mq.receive()
             msg = msg.decode()
-            message = DummyFedMessage.createMessageFromString(msg)
-            #print(__name__ + " Arrivato messaggio con corpo : " + message.getBody())
-            self._ms.serveMessage(message)
+            #message = DummyFedMessage.createMessageFromString(msg)
+            #self._ms.serveMessage(message)
+            self._ms.serveMessage(msg)
 
 
     def end(self):
@@ -79,8 +75,9 @@ class DummyPosixIPCConsumer(iConsumer,threading.Thread):
 class DummyPosixIPCProducer(iProducer):
     def configure(self):
         pass
-    def sendMessage(self,fedMessage):
-        target = "/"+fedMessage.getTarget()
+    def sendMessage(self,fedMessage,topic):
+        target = "/" + topic
         mq = posix_ipc.MessageQueue(target)
-        mq.send(fedMessage.toString())
+        #mq.send(fedMessage.toString())
+        mq.send(fedMessage)
         mq.close()
