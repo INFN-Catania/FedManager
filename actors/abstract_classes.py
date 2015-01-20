@@ -16,7 +16,8 @@
 __author__ = 'maurizio'
 from abc import ABCMeta, abstractmethod
 
-class iActor(metaclass=ABCMeta):
+class iActor():
+    __metaclass__ = ABCMeta
     """An Abstract class in which are pointed out the methods each actor must implement"""
     def __init__(self, messageScheduler, name, configuration):
         self._ms = messageScheduler

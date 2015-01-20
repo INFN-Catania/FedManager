@@ -64,8 +64,6 @@ class DummyPosixIPCConsumer(iConsumer,threading.Thread):
         while self._running:
             msg, _ = self._mq.receive()
             msg = msg.decode()
-            #message = DummyFedMessage.createMessageFromString(msg)
-            #self._ms.serveMessage(message)
             self._ms.serveMessage(msg)
 
 

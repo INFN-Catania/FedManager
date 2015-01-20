@@ -16,7 +16,8 @@
 __author__ = 'maurizio'
 from abc import ABCMeta, abstractmethod
 
-class iConsumer(metaclass=ABCMeta):
+class iConsumer(object):
+    __metaclass__ = ABCMeta
     def __init__(self,messageScheduler,configuration):
         self._ms=messageScheduler
         self._conf=configuration
@@ -25,7 +26,8 @@ class iConsumer(metaclass=ABCMeta):
     def configure(self):
         pass
 
-class iFedMessage(metaclass=ABCMeta):
+class iFedMessage():
+    __metaclass__ = ABCMeta
     @abstractmethod
     def setSource(self,source):
         pass
@@ -48,7 +50,8 @@ class iFedMessage(metaclass=ABCMeta):
     def createMessageFromString(cls,msg):
         raise NotImplementedError()
 
-class iProducer(metaclass=ABCMeta):
+class iProducer():
+    __metaclass__ = ABCMeta
     def __init__(self,configuration):
         #self._ms=messageScheduler
         self._conf=configuration

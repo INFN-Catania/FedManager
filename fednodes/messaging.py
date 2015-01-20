@@ -3,17 +3,20 @@ __author__ = 'maurizio'
 from fednodes.dummy_classes import DummyFedMessage
 
 class MessageScheduler(object):
-    def __init__(self,producer,configuration):
+    def __init__(self, message_class, producer,configuration):
         self._pr=producer
         self._configuration = configuration
         self._source = self._configuration["mom.consumer.topic"]
         self._actors = {}
+        self._messageClass = message_class
+
+
     """from consumer
-    fedStringMessage is a string containig the message encoded by a particular codification (rdf, simple,...)
+    fedStringMessage is a string containing the message encoded by a particular codification (rdf, simple,...)
     """
     def serveMessage(self, fedStringMessage):
         try:
-            fedMessage=DummyFedMessage.createMessageFromString(fedStringMessage)
+            fedMessage=self._messageClass.createMessageFromString(fedStringMessage)
             for actor in self._actors[fedMessage.getBodyUriType()]:
                 actor.submitMessage(fedMessage)
 
