@@ -14,13 +14,14 @@
   limitations under the License.
 """
 __author__ = 'maurizio'
-from actors.abstract_classes import iActor
+from actors.abstract_classes import Actor
 from fednodes.dummy_classes import DummyFedMessage
 import threading
 import time
+from actors.federation_costants import *
+from datetime import datetime, timedelta
 
-
-class ActorTest(iActor,threading.Thread):
+class ActorTest(Actor,threading.Thread):
     """Actor for test"""
     def __init__(self, messageScheduler, name, configuration, typetomanage, typetarget):
         super(ActorTest,self).__init__(messageScheduler, name, configuration)
@@ -29,18 +30,45 @@ class ActorTest(iActor,threading.Thread):
         threading.Thread.__init__(self)
         self._name = name
         self._configuration = configuration
+        self._fedoperations = {
+            OP_FEDERATOR_JOIN_FEDERATION_SUCCESS: {"handler": self._join_federation_success, OP_INIT_TRANSACTION: False},
+            OP_FEDERATOR_JOIN_FEDERATION_FAIL: {"handler": self._join_federation_fail, OP_INIT_TRANSACTION: False}
+        }
         self.start()
 
-    def submitMessage(self, fedMessage):
-        print("Test actor '" + self._name + "received a message of type: '" + fedMessage.getBodyUriType()+"'")
+    """def submitMessage(self, fedMessage):
+        print("Test actor '" + self._name + " received a message of type: '" + fedMessage.getBodyUriType()+"'")
         print(fedMessage.getBody())
-
+    """
     def run(self):
-        while True:
-            body={"funzione": "funzione1" , "args": "arguments", "from": self._name}
-            msg = DummyFedMessage(self._configuration["test.targetMessage"], body, self._typetarget)
-            self._ms.sendMessage(msg)
-            time.sleep(2)
+        body={"operation": OP_SITE_JOIN_FEDERATION_REQUEST, "argument": {"request": 1}}
+
+        messageid= self.createTransaction(state=STATE_RES_REQ_SENT, applicant="test", expiration_time=datetime.now() + timedelta(days=1), arg="prova")
+
+        #while True:
+            #body={"funzione": "funzione1" , "args": "arguments", "from": self._name}
+        msg = DummyFedMessage(
+                        target=self._configuration["test.targetMessage"],
+                        body=body,
+                        bodyUriType=self._typetarget,
+                        id=messageid)
+        self._ms.sendMessage(msg)
+        time.sleep(2)
+
+    def _join_federation_success(self,applicant, id, arg):
+        transaction = self.get_transaction_if_is_in_right_state(id, STATE_RES_REQ_SENT)
+        body={"operation": OP_SITE_JOIN_FEDERATION_SEND_INFO, "argument": {"cpu": 10}}
+        msg = DummyFedMessage(
+           target=self._configuration["test.targetMessage"],
+           body=body,
+           bodyUriType=self._typetarget,
+           id=id)
+        self._ms.sendMessage(msg)
+        print("Test actor sent info to Federator")
+
+
+    def _join_federation_fail(self,applicant, id, arg):
+        pass
 
 
 

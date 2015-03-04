@@ -6,6 +6,7 @@ from fednodes.dummy_classes import DummyPosixIPCConsumer, DummyPosixIPCProducer,
 from fednodes.messaging import MessageScheduler
 from fednodes.kafka_messagging import KafkaConsumer,KafkaProducer
 from actors.dummy_actors import ActorTest
+from actors.federator import FederationManager
 
 class testFedNode(unittest.TestCase):
     _conf = {}
@@ -31,7 +32,12 @@ class testFedNode(unittest.TestCase):
         testB = ActorTest(self._ms, "testB", self._configuration, "http://onto/type2", "http://onto/type1")
         testC = ActorTest(self._ms, "testC", self._configuration, "http://onto/type1", "http://onto/type2")
 
-    def test_KafkaActorMessaging(self):
+
+    def test_fed(self):
+        fedman = FederationManager(self._ms, self._configuration)
+        testA = ActorTest(self._ms, "testA", self._configuration, "ToActor", "ToFederation")
+
+    def Atest_KafkaActorMessaging(self):
         self._producer = KafkaProducer(self._configuration)
         self._ms = MessageScheduler(DummyFedMessage,self._producer, self._configuration)
         self._consumer = KafkaConsumer( self._ms, self._configuration)

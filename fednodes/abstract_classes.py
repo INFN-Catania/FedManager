@@ -32,6 +32,12 @@ class iFedMessage():
     def setSource(self,source):
         pass
     @abstractmethod
+    def setId(self, id):
+        pass
+    @abstractmethod
+    def getId(self):
+        pass
+    @abstractmethod
     def getSource(self):
         pass
     @abstractmethod

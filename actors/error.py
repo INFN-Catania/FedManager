@@ -20,3 +20,11 @@ __author__ = 'marco'
 class ActorException(Exception):
     def __init__(self, message):
         self.message = message
+
+class TransactionAlreadyExist(ActorException):pass
+
+class TransactionDoesNotExist(ActorException):pass
+
+class OperationInvalidInThisState(ActorException):pass
+
+class TransactionNotInRightState(ActorException):pass

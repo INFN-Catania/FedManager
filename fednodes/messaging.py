@@ -19,10 +19,8 @@ class MessageScheduler(object):
             fedMessage=self._messageClass.createMessageFromString(fedStringMessage)
             for actor in self._actors[fedMessage.getBodyUriType()]:
                 actor.submitMessage(fedMessage)
-
-
         except KeyError:
-            print("No actor available for message of type: '" +"'")
+            print("No actor available for message of type: '" + fedMessage.getBodyUriType())
 
     """from Actors
     fedMessage is a python object encapsulating the message information
