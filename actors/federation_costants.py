@@ -27,12 +27,15 @@ OP_FEDERATOR_JOIN_FEDERATION_SUCCESS = "OP_FEDERATOR_JOIN_FEDERATION_SUCCESS"
 OP_FEDERATOR_JOIN_FEDERATION_FAIL = "OP_FEDERATOR_JOIN_FEDERATION_FAIL"
 OP_SITE_JOIN_FEDERATION_SEND_INFO = "OP_SITE_JOIN_FEDERATION_SEND_INFO"
 
-STATE_SITE_JOIN_REQUEST_SENT = "STATE_SITE_JOIN_REQUEST_SENT" """The site sent a Federation join Request Message and it is waiting for a Reply"""
-STATE_SITE_JOIN_REQUEST_FAILED = "STATE_SITE_JOIN_REQUEST_FAILED" """The site has received a federation join fail from Federation Manager"""
-STATE_FEDERATOR_JOIN_REQUEST_SUCCESS = "STATE_FEDERATOR_JOIN_REQUEST_SUCCESS" """The federator has received a federation join request and has replied with a SUCCESS response"""
-STATE_FEDERATOR_JOIN_REQUEST_FAILED = "STATE_FEDERATOR_JOIN_REQUEST_FAILED" """The federator has received a federation join request and has replied with a FAILED response"""
+STATE_SITE_JOIN_REQUEST_SENT = "STATE_SITE_JOIN_REQUEST_SENT" #The site sent a Federation join Request Message and it is waiting for a Reply"""
+STATE_SITE_JOIN_REQUEST_FAILED = "STATE_SITE_JOIN_REQUEST_FAILED" #The site has received a federation join fail from Federation Manager"""
+STATE_FEDERATOR_JOIN_REQUEST_SUCCESS = "STATE_FEDERATOR_JOIN_REQUEST_SUCCESS" #The federator has received a federation join request and has replied with a SUCCESS response"""
+STATE_FEDERATOR_JOIN_REQUEST_FAILED = "STATE_FEDERATOR_JOIN_REQUEST_FAILED" #The federator has received a federation join request and has replied with a FAILED response"""
 
 
+
+
+"""Resource Request"""
 OP_RESOURCE_REQ = "OP_RESOURCE_REQ"
 OP_REGISTER_AGREEMENT = "OP_REGISTER_AGREEMENT"
 

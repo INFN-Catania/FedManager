@@ -19,14 +19,16 @@ from error import *
 from federation_costants import *
 from fednodes.dummy_classes import DummyFedMessage
 import uuid
-
-
+import fed_logging
+from fed_logging import *
+import logging
+import traceback
 STATE="state"
 ETIME="expiration_time"
 ARG="argument"
 APPLICANT="applicant"
 
-
+logger = logging.getLogger("federation.core.federator")
 
 class Actor():
     __metaclass__ = ABCMeta
@@ -39,15 +41,10 @@ class Actor():
         key UUID : {state,expirationtime,arg}"""
         self._transactions = {}
         self._messageHandlers = {
-            #DummyFedMessage: self._dummymessagehandler
             DummyFedMessage: self._dummymessagehandler
         }
 
-    """Method invoked by messaging system to delivery message to Actor
-    message is a python object"""
-    @abstractmethod
-    def submitMessage(self, message):
-        pass
+
 
     """return UUID of new transaction"""
     def createTransaction(self, state, applicant, expiration_time, arg):
@@ -61,8 +58,10 @@ class Actor():
     def registerTransaction(self, id, state, applicant, expiration_time, arg):
         if id in self._transactions:
             raise TransactionAlreadyExist("Transaction already present")
-        print(id)
         self._transactions[id] = {STATE: state, APPLICANT: applicant, ETIME: expiration_time, ARG: arg}
+
+        logger.debug("Transaction registered", PrettyDictionary({'transactionid': id,'state': state, 'applicant': applicant, 'arg': arg}))
+
         return id
 
     """state_time is a dictonary {state, expiration_time}
@@ -88,19 +87,28 @@ class Actor():
         return data
 
 
-    def get_transaction_if_is_in_right_state(self, id, state):
+    def get_transaction_if_is_in_right_state(self, id, applicant, state):
         trans = self.getTransaction(id)
-        if trans[STATE] != state:
-            raise TransactionNotInRightState("Wrong state: " + trans[STATE])
+        if trans[STATE] != state or trans[APPLICANT] != applicant:
+            raise TransactionNotInRightState('Wrong state: ' + trans[STATE] + 'for applicant: ' + applicant)
         return trans
 
+
+    """Method invoked by messaging system to delivery message to Actor
+    message is a python object"""
     def submitMessage(self, fedMessage):
         try:
-            print("Received message: " + fedMessage.getBodyUriType())
+
+            logger.debug("Received message: " , PrettyDictionary({'type body message': fedMessage.getBodyUriType(),
+                                                                  'type message': type(fedMessage)}))
             self._messageHandlers[type(fedMessage)](fedMessage)
         except KeyError as e:
             raise ActorException("Unknow message type" + str(type(fedMessage)))
-
+        except Exception as e:
+            out = StringIO.StringIO()
+            traceback.print_exc(file=out)
+            logger.debug('Error in actor: ', PrettyDictionary({'name': self._name,'error':out.getvalue()}))
+            raise e
     """M E S S A G E  H A N D L E R S"""
 
     """Handler for dummymessage."""
@@ -109,16 +117,17 @@ class Actor():
         try:
             operation = body["operation"]
             opDict = self._fedoperations[operation]
-            a = not self.existTransaction(fedmessage.getId())
             if  opDict[OP_INIT_TRANSACTION] == (not self.existTransaction(fedmessage.getId())):
                 opDict["handler"](applicant=fedmessage.getSource(),
                                   id=fedmessage.getId(),
                                   arg=body["argument"])
             else:
+                #logger.error("Operation is invalid: or Transaction already exist and operation is an initial operation or viceversa")
                 raise OperationInvalidInThisState("Operation is invalid: or Transaction already exist and operation is an initial operation or viceversa")
 
         except KeyError:
-            print ("Unknow message: " + str(body))
+            logger.error("Unknow message",PrettyDictionary({'body message': body}))
+
 
     """Handler for message with rdf/owl content"""
     def _rdfmessagehandler(self, fedmessage):

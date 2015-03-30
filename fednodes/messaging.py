@@ -1,6 +1,11 @@
-from fednodes.abstract_classes import iConsumer
+#from fednodes.abstract_classes import iConsumer
 __author__ = 'maurizio'
-from fednodes.dummy_classes import DummyFedMessage
+#from fednodes.dummy_classes import DummyFedMessage
+import fed_logging
+from fed_logging import *
+import logging
+logger = logging.getLogger("federation.core.federator")
+
 
 class MessageScheduler(object):
     def __init__(self, message_class, producer,configuration):
@@ -16,12 +21,19 @@ class MessageScheduler(object):
     """
     def serveMessage(self, fedStringMessage):
         try:
-            fedMessage=self._messageClass.createMessageFromString(fedStringMessage)
+            try:
+                fedMessage=self._messageClass.createMessageFromString(fedStringMessage)
+            except Exception as err:
+                logger.error("Error creating the message",PrettyDictionary({'exception': err}))
+                return
             for actor in self._actors[fedMessage.getBodyUriType()]:
                 actor.submitMessage(fedMessage)
         except KeyError:
-            print("No actor available for message of type: '" + fedMessage.getBodyUriType())
-
+            #print("No actor available for message of type: '" + fedMessage.getBodyUriType())
+            logger.error("No actor available for message of this type",PrettyDictionary({'type': fedMessage.getBodyUriType()}))
+        except Exception as err:
+            """TODO: create an Error Manager"""
+            logger.error("Error from actor",PrettyDictionary({'exception': err}))
     """from Actors
     fedMessage is a python object encapsulating the message information
     """

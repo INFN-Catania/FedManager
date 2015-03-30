@@ -19,7 +19,9 @@ import threading
 import posix_ipc
 import json
 import uuid
+import logging
 
+logger = logging.getLogger('federation.core.federator')
 
 class DummyFedMessage(iFedMessage):
     def __init__(self,target,body,bodyUriType,id,source=None):
@@ -72,7 +74,7 @@ class DummyPosixIPCConsumer(iConsumer,threading.Thread):
             posix_ipc.unlink_message_queue(queue)
         except posix_ipc.ExistentialError:
             pass
-        print("Apro queue: " + queue)
+        logger.debug("Open queue: " + queue)
         self._mq = posix_ipc.MessageQueue(queue, posix_ipc.O_CREAT)
         self.start()
 

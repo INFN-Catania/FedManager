@@ -15,56 +15,90 @@
 """
 __author__ = 'maurizio'
 from abc import ABCMeta, abstractmethod
+from fednodes.messaging import MessageScheduler
+
 
 class iConsumer(object):
     __metaclass__ = ABCMeta
-    def __init__(self,messageScheduler,configuration):
-        self._ms=messageScheduler
-        self._conf=configuration
+
+    def __init__(self, messageScheduler, configuration):
+        self._ms = messageScheduler
+        self._conf = configuration
         self.configure()
+
     @abstractmethod
     def configure(self):
         pass
 
-class iFedMessage():
-    __metaclass__ = ABCMeta
-    @abstractmethod
-    def setSource(self,source):
-        pass
-    @abstractmethod
-    def setId(self, id):
-        pass
-    @abstractmethod
-    def getId(self):
-        pass
-    @abstractmethod
-    def getSource(self):
-        pass
-    @abstractmethod
-    def getTarget(self):
-        pass
-    @abstractmethod
-    def getBody(self):
-        pass
-    @abstractmethod
-    def getBodyUriType(self):
-        pass
-    @abstractmethod
-    def toString(self):
-        pass
-    @classmethod
-    def createMessageFromString(cls,msg):
-        raise NotImplementedError()
 
 class iProducer():
     __metaclass__ = ABCMeta
-    def __init__(self,configuration):
-        #self._ms=messageScheduler
-        self._conf=configuration
+
+    def __init__(self, configuration):
+        # self._ms=messageScheduler
+        self._conf = configuration
         self.configure()
+
     @abstractmethod
     def configure(self):
         pass
+
     @abstractmethod
-    def sendMessage(self,fedMessageAsString,topic_target):
+    def sendMessage(self, fedMessageAsString, topic_target):
         pass
+
+
+# TODO: add 'add_actor'
+class Fednode():
+    def __init__(self, configuration, message_class, consumer_class, producer_class):
+        self._configuration = configuration
+        producer = producer_class(configuration)
+        self._ms = MessageScheduler(message_class, producer, configuration)
+        consumer = consumer_class(self._ms, configuration)
+
+    def get_configuration(self):
+        return self._configuration
+
+    def get_ms(self):
+        return self._ms
+
+
+class iFedMessage():
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def setSource(self, source):
+        pass
+
+    @abstractmethod
+    def setId(self, id):
+        pass
+
+    @abstractmethod
+    def getId(self):
+        pass
+
+    @abstractmethod
+    def getSource(self):
+        pass
+
+    @abstractmethod
+    def getTarget(self):
+        pass
+
+    @abstractmethod
+    def getBody(self):
+        pass
+
+    @abstractmethod
+    def getBodyUriType(self):
+        pass
+
+    @abstractmethod
+    def toString(self):
+        pass
+
+    @classmethod
+    def createMessageFromString(cls, msg):
+        raise NotImplementedError()
+
