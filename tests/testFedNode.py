@@ -14,11 +14,11 @@ class testFedNode(unittest.TestCase):
     def setUp(self, _conf=None):
         self._configuration = { "mom.consumer.topic": "federation_site",
                                 "test.targetMessage" : "federation_site",
-                                "mom.producer.brokerlist" : "localhost:9092",
+                                "mom.producer.brokerlist" : "193.206.209.83:9092",
                                 "mom.consumer.numthread" : "2"}
 
 
-    def test_fednode(self):
+    def Atest_fednode(self):
         sitefed = Fednode(self._configuration,
                           DummyFedMessage,
                           DummyPosixIPCConsumer,
@@ -28,24 +28,44 @@ class testFedNode(unittest.TestCase):
         Afedman = FederationManager(sitefed.get_ms(),
                                     sitefed.get_configuration())
 
-        site1 = Fednode({       "mom.consumer.topic": "site1",
-                                "test.targetMessage" : "federation_site",
-                                "mom.producer.brokerlist" : "localhost:9092",
-                                "mom.consumer.numthread" : "2"},
+        site1 = Fednode({"mom.consumer.topic": "site1",
+                         "test.targetMessage" : "federation_site",
+                         "mom.producer.brokerlist" : "localhost:9092",
+                         "mom.consumer.numthread" : "2"},
                           DummyFedMessage,
                           DummyPosixIPCConsumer,
                           DummyPosixIPCProducer,
-                          )
+                        )
 
 
 
         testA = ActorTest(site1.get_ms(),
-                          "testA",
+                          "fedManager_site_1",
                           site1.get_configuration(),
                           "ToSiteFedManager",
                           "ToFederationManager")
+        site2 = Fednode({
+                            "mom.consumer.topic": "site2",
+                            "test.targetMessage" : "federation_site",
+                            "mom.producer.brokerlist" : "localhost:9092",
+                            "mom.consumer.numthread" : "2"
+                        },
+                        DummyFedMessage,
+                        DummyPosixIPCConsumer,
+                        DummyPosixIPCProducer,
+                       )
 
-    def Atest_KafkaActorMessagingfednode(self):
+
+
+        testA = ActorTest(site2.get_ms(),
+                          "fedManager_site_2",
+                          site2.get_configuration(),
+                          "ToSiteFedManager",
+                          "ToFederationManager")
+
+
+
+    def test_KafkaActorMessagingfednode(self):
         sitefed = Fednode(self._configuration,
                           DummyFedMessage,
                           KafkaConsumer,
@@ -57,7 +77,7 @@ class testFedNode(unittest.TestCase):
 
         site1 = Fednode({       "mom.consumer.topic": "site1",
                                 "test.targetMessage" : "federation_site",
-                                "mom.producer.brokerlist" : "localhost:9092",
+                                "mom.producer.brokerlist" : "193.206.209.83:9092",
                                 "mom.consumer.numthread" : "2"},
                           DummyFedMessage,
                           KafkaConsumer,

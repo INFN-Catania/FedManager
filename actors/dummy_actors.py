@@ -41,7 +41,14 @@ class ActorTest(Actor,threading.Thread):
         self._configuration = configuration
         self._fedoperations = {
             OP_FEDERATOR_JOIN_FEDERATION_SUCCESS: {"handler": self._join_federation_success, OP_INIT_TRANSACTION: False},
-            OP_FEDERATOR_JOIN_FEDERATION_FAIL: {"handler": self._join_federation_fail, OP_INIT_TRANSACTION: False}
+            OP_FEDERATOR_JOIN_FEDERATION_FAIL: {"handler": self._join_federation_fail, OP_INIT_TRANSACTION: False},
+            OP_FEDERATOR_REQUEST_REQUEST: {"handler": self._resource_request_request, OP_INIT_TRANSACTION: True},
+            OP_FEDERATOR_REQUEST_REQUEST_AGREEMENT: {"handler": self._resource_request_request_agreement, OP_INIT_TRANSACTION: False},
+            OP_FEDERATOR_REQUEST_CONFIRM_AGREEMENT: {"handler": self._resource_request_confirm_agreement, OP_INIT_TRANSACTION: False},
+
+
+
+
         }
         self.start()
 
@@ -65,7 +72,7 @@ class ActorTest(Actor,threading.Thread):
         time.sleep(2)
         while not self._federated:
             time.sleep(1)
-        logger.debug("Test actor joined")
+        logger.debug("Test actor joined",{'site_name': self._name})
         msg = DummyFedMessage(
                         target=self._configuration["test.targetMessage"],
                         body=body,
@@ -91,6 +98,16 @@ class ActorTest(Actor,threading.Thread):
 
     def _join_federation_fail(self,applicant, id, arg):
         logger.debug("Test Federation failed", PrettyDictionary({'applicant': applicant,'transactionid': id,'arg': arg}))
+
+    """Join federation Handlers"""
+    def _resource_request_request(self,applicant, id, arg):
+        pass
+
+    def _resource_request_request_agreement(self,applicant, id, arg):
+        pass
+
+    def _resource_request_confirm_agreement(self,applicant, id, arg):
+        pass
 
 
 

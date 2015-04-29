@@ -48,7 +48,7 @@ class iProducer():
         pass
 
 
-# TODO: add 'add_actor'
+# TODO: add 'add_actor' method
 class Fednode():
     def __init__(self, configuration, message_class, consumer_class, producer_class):
         self._configuration = configuration

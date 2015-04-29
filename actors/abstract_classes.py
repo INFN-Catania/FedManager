@@ -38,7 +38,7 @@ class Actor():
         self._configuration = configuration
         self._name = name
         """Map where actor store the active transactions
-        key UUID : {state,expirationtime,arg}"""
+        key UUID : {state,applicant,expirationtime,arg}"""
         self._transactions = {}
         self._messageHandlers = {
             DummyFedMessage: self._dummymessagehandler
@@ -54,7 +54,7 @@ class Actor():
         self._transactions[id] = {STATE: state, APPLICANT:applicant, ETIME: expiration_time, ARG: arg}
         return id
 
-    """return UUID of new transaction"""
+    """return UUID of registered transaction (the same passed as parameter)"""
     def registerTransaction(self, id, state, applicant, expiration_time, arg):
         if id in self._transactions:
             raise TransactionAlreadyExist("Transaction already present")
